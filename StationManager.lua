@@ -5,6 +5,7 @@
 local robot = require("robot")
 local component = require("component")
 local computer = require("computer")
+local config = require("config")
 
 local StationManager = {}
 
@@ -185,7 +186,7 @@ function grabEnergyResource (param_table)
     -- expectation: try to take -amount- energy resource from the chest
     
     -- the ores we will grab will be in slot 5 since we assume our invent. is empty of ores
-    robot.select(5)
+    robot.select(config.RESOURCE_SLOTS.START)
 
     local current_storage_slot = 1
     while robot.count() < target_amount and current_storage_slot <= CHEST_SIZE do
@@ -215,7 +216,7 @@ function dropAndUseEnergyResource ()
     -- assumption: (1) robot is right in front of generator energy source
     --             (2) It has some amount of energy resource in slot 5 of its inventory
     -- expectation: drop all the energy resource it has in slot 5 into the chest in front of it
-    robot.select(5)
+    robot.select(config.RESOURCE_SLOTS.START)
     robot.drop()
 end
 

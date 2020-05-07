@@ -5,8 +5,8 @@ config = require("config")
 ConfigureAvoids = {}
 
 -- CONSTANTS
-local DB_AVOID_SLOT_START = 1
-local DB_AVOID_SLOT_END = 20
+local DB_AVOID_SLOT_START = config.DB.AVOID_SLOTS.START
+local DB_AVOID_SLOT_END = config.DB.AVOID_SLOTS.END
 
 local function findFirstAvailableSlot ()
     for i = DB_AVOID_SLOT_START, DB_AVOID_SLOT_END do
