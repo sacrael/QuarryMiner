@@ -17,6 +17,7 @@ local x_displacement = 0
 local z_displacement = 0
 
 local station_points = {
+    base_position = {x = 0, z = 0},
     ore_storage_1 = {z = 1, x = -1},
     ore_storage_2 = {z = -1, x = -1},
     tool_storage = {x = -2},
@@ -100,7 +101,9 @@ local function stationMotion (displacement_vec, static_action_function, action_f
     end
 
     -- execute our action
-    static_action_function (action_function_params)
+    if static_action_function then
+        static_action_function (action_function_params)
+    end
 
     -- reset y displacement
     for i = 1, math.abs(y_disp_) do
@@ -129,6 +132,7 @@ end
 
 function belongsInEnergyResource (item_info)
     -- TODO implement
+    return true
 end
 
 function findAndDropOres ()
@@ -223,6 +227,10 @@ end
 function StationManager.enterChargingDock ()
     -- TODO implement
     print("Implement enter charging dock")
+end
+
+function StationManager.resetDisplacement ()
+    stationMotion(station_points.base_position)
 end
 
 return StationManager
