@@ -4,6 +4,7 @@
 
 local robot = require("robot")
 local component = require("component")
+local computer = require("computer")
 
 local StationManager = {}
 
@@ -11,6 +12,7 @@ local StationManager = {}
 local MIN_COAL_TO_RECHARGE = 5
 local CHEST_SIZE = 27
 local DOUBLE_CHEST_SIZE = 54
+local CHARGE_TIME_PER_PERCENT = 1.88 -- 1.88s / % energy
 
 -- we assume y-displacement is always 0, so we have to reset any forward/backeward movement that we do
 local x_displacement = 0
@@ -26,7 +28,10 @@ local station_points = {
     energy_resource_storage = {x = 1},
 
     -- where we store the coal to enter the generator
-    energy_usage_storage = {x = 2, z = 2, y = 1}
+    energy_usage_storage = {x = 2, z = 2, y = 1},
+
+    -- where robot sits to charge up
+    charging_dock = {x = 2, z = -1, y = 1}
 }
 
 local function stationMotion (displacement_vec, static_action_function, action_function_params)
@@ -224,13 +229,25 @@ function StationManager.replenishGenerator ()
 
 end
 
+function sleepUntilCharged ()
+
+    local missing_energy = 1 - (computer.energy() / ( 1.0 * computer.maxEnergy() ))
+    local time_to_sleep = (missing_energy * 100) * CHARGE_TIME_PER_PERCENT
+
+    os.sleep(time_to_sleep)
+end
+
 function StationManager.enterChargingDock ()
-    -- TODO implement
-    print("Implement enter charging dock")
+    -- go to charging dock and charge up
+    stationMotion(station_points.charging_dock, sleepUntilCharged)
+    
+    -- return to start position
+    StationManager.resetDisplacement ()
 end
 
 function StationManager.resetDisplacement ()
     stationMotion(station_points.base_position)
 end
+
 
 return StationManager
