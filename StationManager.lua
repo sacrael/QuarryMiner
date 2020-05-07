@@ -117,7 +117,7 @@ function StationManager.informPositionReset ()
     z_displacement = 0
 end
 
-function belongsInOreStorage () 
+function belongsInOreStorage (item_info) 
     -- TODO implement
     return true
 end
