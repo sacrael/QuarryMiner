@@ -38,17 +38,17 @@ local function stationMotion (displacement_vec, static_action_function)
         print(k, v)
     end
 
-    local x_disp_ = displacement_vec[x] == nil and 0 or displacement_vec[x]
+    local x_disp_ = displacement_vec.x == nil and 0 or displacement_vec.x
     x_disp_ = x_disp_ - x_displacement
 
     print ("x disp: ".. x_disp_)
 
-    local z_disp_ = displacement_vec[z] == nil and 0 or displacement_vec[z]
+    local z_disp_ = displacement_vec.z == nil and 0 or displacement_vec.z
     z_disp_ = z_disp_ - z_displacement
 
     print ("z disp: ".. z_disp_)
     -- at the end of our motion, y_displacement needs to be reset
-    local y_disp_ = displacement_vec[y] == nil and 0 or displacement_vec[y]
+    local y_disp_ = displacement_vec.y == nil and 0 or displacement_vec.y
 
     print ("y disp: " .. y_disp_)
 
