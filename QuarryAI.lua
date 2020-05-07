@@ -72,6 +72,16 @@ local function shouldHarvest (direction_index)
     return harvestableBlock ( component.geolyzer.analyze(direction_index) )
 end
 
+local function sortByPriority (a, b)
+
+end
+
+function QuarryAI.prepare ()
+    for i=1, #tool_requirements do
+        table.sort (tool_requirements[i].type, sortByPriority)
+    end
+end
+
 function QuarryAI.analyzeNextDepth () 
     -- assumption: robot is already positioned in the line it needs to mine in
     --  and is facing the direction parallel to the line
@@ -130,8 +140,64 @@ local function shouldCharge ()
     return (computer.energy() / computer.maxEnergy()) < 0.4
 end
 
+local function hasTool (toolset, tool_name) 
+
+    for i = 1, #toolset do
+        if toolset[i].name == tool_name then
+            return true
+        end
+    end
+    return false
+
+end
+
 local function shouldReplenishTools ()
-    --
+    -- check in the slots highlighted for tool storage and active
+    -- hand slot, see if every item identified as required is
+    -- in these slots
+
+    local tools_ = {}
+    for i=config.TOOL_SLOTS.START, config.TOOL_SLOTS.END do
+        if robot.count(i) > 0 then
+            table.insert( tools_, component.inventory_controller.getStackInInternalSlot(i) )
+        end
+    end
+
+    -- get the tool that is equip
+    robot.select(1)
+    component.inventory_controller.equip ()
+    if robot.count(1)  > 0 then
+        table.insert( tools_, component.inventory_controller.getStackInInternalSlot(1) )
+    end
+    -- not necessary to re-equipt original tool since we equiptOptimal before we break
+    -- any block
+
+    -- analyze tools_ with tool_requirements. If any required tools are not present, 
+    -- we have to return to base to replenish tools
+    for i=1, #tool_requirements do 
+        if tool_requirements[i].required then 
+            
+            -- check if any variation of this required too exists in out toolset
+            local tool_found = false
+            for j = 1, #tool_requirements[i].type do
+
+                if hasTool(tools_, tool_requirements[i].type[j].name) then
+                    tool_found = true
+                end
+
+            end
+
+            -- if we didnt find one of the required tools, then we should replenish tools
+            if not tool_found then
+                return true
+            end
+
+        end
+    end
+
+    -- we have all required tools. Do not need to replenish
+    return false
+
 end
 
 local function shouldClearInventory ()
