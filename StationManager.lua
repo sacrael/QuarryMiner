@@ -117,8 +117,19 @@ function StationManager.informPositionReset ()
     z_displacement = 0
 end
 
-function placeholderAction ()
-    print("Placeholder action")
+function belongsInOreStorage () 
+
+end
+
+function findAndDropOres ()
+    -- loop through the iventory and determine if the item is
+    -- an ore. If so, drop it into chest.
+    for i = 1, robot.inventorySize () do 
+        -- if the item should be in our ore storage, drop it there
+        if belongsInOreStorage (component.inventory_controller.getStackInInternalSlot(i)) then
+            robot.drop(i)
+        end
+    end
 end
 
 function StationManager.depositOresIntoStorage (storage_id)
@@ -128,9 +139,9 @@ function StationManager.depositOresIntoStorage (storage_id)
     print ("In depositOresIntoStorage()")
     print ("\tStorage ID: " .. storage_id)
     if storage_id == 1 then
-        stationMotion(station_points.ore_storage_1, placeholderAction)
+        stationMotion(station_points.ore_storage_1, findAndDropOres)
     elseif storage_id == 2 then
-        stationMotion(station_points.ore_storage_2, placeholderAction)
+        stationMotion(station_points.ore_storage_2, findAndDropOres)
     end
 end
 
