@@ -62,6 +62,14 @@ local function equiptOptimal (block_info)
     -- TODO implement
     -- Given information about the block we want to break, equipt the
     --  tool that will best break that block.
+
+    local harvest_tool = block_info.harvestTool
+    -- if there is no specified harvest tool, then any tool will do
+    -- (this will rearly happen as most blocks have an optimal harvest tool)
+    if harvest_tool ~= nil then
+
+    end
+
 end
 
 local function shouldHarvest (direction_index)
@@ -73,7 +81,7 @@ local function shouldHarvest (direction_index)
 end
 
 local function sortByPriority (a, b)
-
+    return a.priority < b.priority
 end
 
 function QuarryAI.prepare ()
