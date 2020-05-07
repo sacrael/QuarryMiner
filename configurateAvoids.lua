@@ -21,7 +21,7 @@ local function alreadyExists (internal_slot)
     -- check the databse between DB_AVOID_SLOT_START and DB_AVOID_SLOT_END to see if the item
     -- in internal_slot exists within
     for i = DB_AVOID_SLOT_START, DB_AVOID_SLOT_END do
-        if component.compareToDatabase(internal_slot, config.DB_ADDRESS, i) then
+        if component.inventory_controller.compareToDatabase(internal_slot, config.DB_ADDRESS, i) then
             return true
         end
     end
