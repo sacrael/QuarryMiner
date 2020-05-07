@@ -7,6 +7,11 @@ local component = require("component")
 
 local StationManager = {}
 
+-- CONSTS
+local MIN_COAL_TO_RECHARGE = 5
+local CHEST_SIZE = 27
+local DOUBLE_CHEST_SIZE = 54
+
 -- we assume y-displacement is always 0, so we have to reset any forward/backeward movement that we do
 local x_displacement = 0
 local z_displacement = 0
@@ -23,7 +28,7 @@ local station_points = {
     energy_usage_storage = {x = 2, z = 2, y = 1}
 }
 
-local function stationMotion (displacement_vec, static_action_function)
+local function stationMotion (displacement_vec, static_action_function, action_function_params)
     -- displacement_vec (table): describes where within the station we want our robot to move
     -- static_action_function (function): describes the function to execute once we reach the position
     --      we want in our station.
@@ -95,7 +100,7 @@ local function stationMotion (displacement_vec, static_action_function)
     end
 
     -- execute our action
-    static_action_function ()
+    static_action_function (action_function_params)
 
     -- reset y displacement
     for i = 1, math.abs(y_disp_) do
@@ -122,13 +127,30 @@ function belongsInOreStorage (item_info)
     return true
 end
 
+function belongsInEnergyResource (item_info)
+    -- TODO implement
+end
+
 function findAndDropOres ()
     -- loop through the iventory and determine if the item is
     -- an ore. If so, drop it into chest.
     for i = 1, robot.inventorySize () do 
         -- if the item should be in our ore storage, drop it there
         if belongsInOreStorage (component.inventory_controller.getStackInInternalSlot(i)) then
-            robot.drop(i)
+            robot.select(i)
+            robot.drop()
+        end
+    end
+end
+
+function findAndDropEnergyResource ()
+ -- loop through the iventory and determine if the item is
+    -- an energy resource. If so, drop it into chest.
+    for i = 1, robot.inventorySize () do 
+        -- if the item should be in our ore storage, drop it there
+        if belongsInEnergyResource (component.inventory_controller.getStackInInternalSlot(i)) then
+            robot.select(i)
+            robot.drop()
         end
     end
 end
@@ -146,5 +168,61 @@ function StationManager.depositOresIntoStorage (storage_id)
     end
 end
 
+function grabEnergyResource (param_table) 
+    local target_amount = param_table.amount == nil and MIN_COAL_TO_RECHARGE or param_table.amount
+
+    -- assumption: (1) robot is right in front of chest with energy resource
+    --             (2) inventory slots 5...16 are clear
+    -- expectation: try to take -amount- energy resource from the chest
+    
+    -- the ores we will grab will be in slot 5 since we assume our invent. is empty of ores
+    robot.select(5)
+
+    local current_storage_slot = 1
+    while robot.count() < target_amount and current_storage_slot <= CHEST_SIZE do
+        -- try to get the resource from each slot of the inventory
+        -- side 3 == front
+        component.inventory_controller.suckFromSlot (3, current_storage_slot, target_amount - robot.count())
+
+        current_storage_slot = current_storage_slot + 1
+    end
+
+    if current_storage_slot > CHEST_SIZE and robot.count() < target_amount then
+        print ("Unable to retrieve " .. target_amount .. " energy resource from storage.")
+    end
+
+end
+
+function StationManager.depositEnergyResource ()
+
+    -- Go to energy resource station and places any energy resources that are in the
+    -- robot's inventory into the chest
+    print ("Depositing energy resource")
+    stationMotion(station_points.energy_resource_storage, findAndDropEnergyResource)
+
+end
+
+function dropAndUseEnergyResource () 
+    -- assumption: (1) robot is right in front of generator energy source
+    --             (2) It has some amount of energy resource in slot 5 of its inventory
+    -- expectation: drop all the energy resource it has in slot 5 into the chest in front of it
+    robot.select(5)
+    robot.drop()
+end
+
+function StationManager.replenishGenerator ()
+
+    -- first, go to the energy resource storage and get some amount of coal
+    stationMotion(station_points.energy_resource_storage, grabEnergyResource, {amount = 10})
+
+    -- then, go to the generator energy source and place the item into the chest
+    stationMotion(station_points.energy_usage_storage, dropAndUseEnergyResource)
+
+end
+
+function StationManager.enterChargingDock ()
+    -- TODO implement
+    print("Implement enter charging dock")
+end
 
 return StationManager
