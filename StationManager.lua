@@ -118,7 +118,8 @@ function StationManager.informPositionReset ()
 end
 
 function belongsInOreStorage () 
-
+    -- TODO implement
+    return true
 end
 
 function findAndDropOres ()
