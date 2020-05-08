@@ -67,7 +67,7 @@ local function equiptOptimal (block_info)
     -- if there is no specified harvest tool, then any tool will do
     -- (this will rearly happen as most blocks have an optimal harvest tool)
     if harvest_tool ~= nil then
-
+        
     end
 
 end
