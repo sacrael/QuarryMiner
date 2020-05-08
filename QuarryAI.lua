@@ -17,23 +17,23 @@ local ANALYZE_DIRECTION = {
 }
 
 local tool_requirements = {
-    -- omit slots, so we can have 1 free space that is not left empty due to 
-    -- the item in the slot being equipt. Instead, search the 1st 4 slots and the 
+    -- omit slots, so we can have 1 free space that is not left empty due to
+    -- the item in the slot being equipt. Instead, search the 1st 4 slots and the
     -- equipt slot
-    
+
     {label = "pickaxe",         required=true,      type={ {name="minecraft:stone_pickaxe", priority=1} }}, -- stone pickaxe
     {label= "iron pickaxe",     required=true,      type={ {name="minecraft:iron_pickaxe", priority=1} }}, -- iron pickaxe
-    {label = "shovel",          required=true,      type={ 
-                                                            {name="minecraft:stone_shovel", priority=1}, 
+    {label = "shovel",          required=true,      type={
+                                                            {name="minecraft:stone_shovel", priority=1},
                                                             {name="monecraft:iron_shovel", priority=2}
                                                         }},
-    {label = "axe",             required=true,      type={ 
-                                                            {name="minecraft:stone_axe", priority=1}, 
+    {label = "axe",             required=true,      type={
+                                                            {name="minecraft:stone_axe", priority=1},
                                                             {name="minecraft:iron_axe", priority=2}
                                                         }},
     {label = "silk pickaxe",    required=false,     type={ {
-                                                             name="tconstruct:pickaxe", 
-                                                            filter= function(item) ItemFilter.Tinker(item, {"Silk Touch"}) end, 
+                                                             name="tconstruct:pickaxe",
+                                                            filter= function(item) ItemFilter.Tinker(item, {"Silk Touch"}) end,
                                                             priority=1} }} -- silk touch pixkaxe
 }
 
@@ -67,7 +67,7 @@ local function equiptOptimal (block_info)
     -- if there is no specified harvest tool, then any tool will do
     -- (this will rearly happen as most blocks have an optimal harvest tool)
     if harvest_tool ~= nil then
-        
+
     end
 
 end
@@ -90,7 +90,7 @@ function QuarryAI.prepare ()
     end
 end
 
-function QuarryAI.analyzeNextDepth () 
+function QuarryAI.analyzeNextDepth ()
     -- assumption: robot is already positioned in the line it needs to mine in
     --  and is facing the direction parallel to the line
     -- expects: robot moves 1 step deeper into the line and checks for
@@ -133,7 +133,7 @@ function QuarryAI.analyzeNextDepth ()
     end
 
     -- check left
-    if shouldHarvest(ANALYZE_DIRECTION.LEFT) then 
+    if shouldHarvest(ANALYZE_DIRECTION.LEFT) then
         equiptOptimal ( component.geolyzer.analyze(ANALYZE_DIRECTION.LEFT) )
         robot.turnLeft ()
         robot.swing()
@@ -148,7 +148,7 @@ local function shouldCharge ()
     return (computer.energy() / computer.maxEnergy()) < 0.4
 end
 
-local function hasTool (toolset, tool_name) 
+local function hasTool (toolset, tool_name)
 
     for i = 1, #toolset do
         if toolset[i].name == tool_name then
@@ -180,11 +180,11 @@ local function shouldReplenishTools ()
     -- not necessary to re-equipt original tool since we equiptOptimal before we break
     -- any block
 
-    -- analyze tools_ with tool_requirements. If any required tools are not present, 
+    -- analyze tools_ with tool_requirements. If any required tools are not present,
     -- we have to return to base to replenish tools
-    for i=1, #tool_requirements do 
-        if tool_requirements[i].required then 
-            
+    for i=1, #tool_requirements do
+        if tool_requirements[i].required then
+
             -- check if any variation of this required too exists in out toolset
             local tool_found = false
             for j = 1, #tool_requirements[i].type do
