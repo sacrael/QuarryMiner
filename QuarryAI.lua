@@ -58,6 +58,19 @@ local function harvestableBlock(block_info)
 
 end
 
+local function fortunateBlock(block_info)
+    -- return true if this block is a block that should be harvested with
+    -- a fortune pick
+    for i = config.DB.FORTUNE_SLOTS.START, config.DB.FORTUNE_SLOTS.END do
+        if component.database.get(i) ~= nil and component.database.get(i).name == block_info.name then
+            print("BLock of name " .. block_info.name .. " is fortunate.")
+            return true
+        end
+    end
+    
+    return false
+end
+
 local function equiptOptimal (block_info)
     -- TODO implement
     -- Given information about the block we want to break, equipt the
