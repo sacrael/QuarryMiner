@@ -66,7 +66,7 @@ function ItemFinder.analyzeTool (slot_info)
     return nil
 end
 
-function ItemFinder.compareSlotWithBlock (block_info, slot_info)
+function ItemFinder.compareSlotWithBlock (block_info, slot_info, strict)
     -- Given a block, analyzed by the geolyzer, and a slot info,
     -- analyzed by the inventory_controller, return true if the item
     -- in the slot can be used to mine the block
@@ -74,16 +74,18 @@ function ItemFinder.compareSlotWithBlock (block_info, slot_info)
     if slot_info == nil then return false end
     if block_info == nil then return false end
 
-    print("Analyzing tool")
+    -- print("Analyzing tool")
     local slot_tool = ItemFinder.analyzeTool(slot_info)
     if slot_tool == nil then return false end
-    print("This is one of the core tools")
+    -- print("This is one of the core tools")
 
-    print("slot_tool.info.harvestTool == block_info.harvestTool ? " .. tostring(slot_tool.info.harvestTool == block_info.harvestTool))
-    print("slot_tool.info.harvestTool >= block_info.harbestLevel ? " .. tostring(slot_tool.info.harvestLevel >= block_info.harvestLevel))
+    -- print("slot_tool.info.harvestTool == block_info.harvestTool ? " .. tostring(slot_tool.info.harvestTool == block_info.harvestTool))
+    -- print("slot_tool.info.harvestTool >= block_info.harbestLevel ? " .. tostring(slot_tool.info.harvestLevel >= block_info.harvestLevel))
 
     -- check if the tool has the required harvestLevel and harvestTool values
-    if slot_tool.info.harvestTool == block_info.harvestTool and slot_tool.info.harvestLevel >= block_info.harvestLevel then
+    if strict and slot_tool.info.harvestTool == block_info.harvestTool and slot_tool.info.harvestLevel == block_info.harvestLevel then
+        return true
+    elseif strict and slot_tool.info.harvestTool == block_info.harvestTool and slot_tool.info.harvestLevel >= block_info.harvestLevel then
         return true
     end
 
