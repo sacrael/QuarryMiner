@@ -97,7 +97,7 @@ function ItemFinder.findMinimumToolForBlock(block_info)
     local minimum_level = nil
     local minimum_slot_index = nil
 
-    for i=1, #robot.inventorySize() do
+    for i=1, robot.inventorySize() do
 
         local slot_info = component.inventory_controller.getStackInInternalSlot(i)
 
