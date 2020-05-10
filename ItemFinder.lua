@@ -85,11 +85,36 @@ function ItemFinder.compareSlotWithBlock (block_info, slot_info, strict)
     -- check if the tool has the required harvestLevel and harvestTool values
     if strict and slot_tool.info.harvestTool == block_info.harvestTool and slot_tool.info.harvestLevel == block_info.harvestLevel then
         return true
-    elseif strict and slot_tool.info.harvestTool == block_info.harvestTool and slot_tool.info.harvestLevel >= block_info.harvestLevel then
+    elseif not strict and slot_tool.info.harvestTool == block_info.harvestTool and slot_tool.info.harvestLevel >= block_info.harvestLevel then
         return true
     end
 
     return false
+end
+
+function ItemFinder.findMinimumToolForBlock(block_info)
+
+    local minimum_level = nil
+    local minimum_slot_index = nil
+
+    for i=1, #robot.inventorySize() do
+
+        local slot_info = component.inventory_controller.getStackInInternalSlot(i)
+
+
+        if ItemFinder.compareSlotWithBlock(block_info, slot_info, false) then
+
+            if slot_info.info.harvestLevel >= block_info.harvestLevel 
+            and (minimum_level == nil or slot_info.info.harvestLevel < minimum_level) then
+                minimum_slot_index = i
+            end
+
+        end
+    end
+
+    -- return the index of the the least qualifiable tool
+    return minimum_slot_index
+
 end
 
 return ItemFinder
