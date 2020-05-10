@@ -8,6 +8,9 @@ config.MINE_DEPTH = 3
 
 config.TOOL_SLOTS = {START = 1, END = 4}
 config.RESOURCE_SLOTS = {START = 5, END = 16}
-config.DB = {AVOID_SLOTS = {START = 1, END = 20}}
+config.DB = {
+    AVOID_SLOTS = {START = 1, END = 20},
+    FORTUNE_SLOTS = {START = 61, END=81}
+}
 
 return config
