@@ -10,10 +10,10 @@ QuarryAI = {}
 local ANALYZE_DIRECTION = {
     DOWN = 0,
     UP = 1,
-    LEFT = 2,
+    BACK = 2,
     FRONT = 3,
     RIGHT = 4,
-    BACK = 5
+    LEFT = 5,
 }
 
 local tool_requirements = {
