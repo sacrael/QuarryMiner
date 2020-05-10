@@ -107,6 +107,7 @@ function ItemFinder.findMinimumToolForBlock(block_info)
             if slot_info.info.harvestLevel >= block_info.harvestLevel 
             and (minimum_level == nil or slot_info.info.harvestLevel < minimum_level) then
                 minimum_slot_index = i
+                minimum_level = slot_info.info.harvestLevel
             end
 
         end
