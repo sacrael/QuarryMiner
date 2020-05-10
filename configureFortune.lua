@@ -2,7 +2,7 @@ component = require("component")
 robot = require("robot")
 config = require("config")
 
-ConfigureAvoids = {}
+ConfigureFortune = {}
 
 -- CONSTANTS
 local DB_FORTUNE_SLOT_START = config.DB.FORTUNE_SLOTS.START
@@ -29,7 +29,7 @@ local function alreadyExists (internal_slot)
     return false
 end
 
-function ConfigureAvoids.beginConfiguration (block_count) 
+function ConfigureFortune.beginConfiguration (block_count) 
     -- Breaks -block_count- blocks ahead of it and moves forward each time
     -- for each block it analyzes in front of it, the block is added to the database
     -- of blocks to avoid
@@ -60,4 +60,4 @@ function ConfigureAvoids.beginConfiguration (block_count)
     end
 end
 
-return ConfigureAvoids
+return ConfigureFortune
