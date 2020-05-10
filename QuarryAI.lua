@@ -24,6 +24,20 @@ local ANALYZE_DIRECTION = {
 --  4 == right
 --  5 == back
 
+local active_tool = nil
+
+local function equiptTool (slot_index)
+
+    if slot_index < 1 or slot_index > robot.inventorySize()
+    or robot.count(slot_index) == 0 then
+        print ("Cannot equip...")
+    end
+
+    active_tool = component.inventory_controller.getStackInInternalSlot(slot_index)
+    robot.select(slot_index)
+    component.inventory_controller.equip()
+end
+
 local function harvestableBlock(block_info)
 
     for i = config.DB.AVOID_SLOTS.START, config.DB.AVOID_SLOTS.END do

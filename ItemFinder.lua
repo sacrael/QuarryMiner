@@ -1,4 +1,5 @@
-robot = require("robot")
+local robot = require("robot")
+local config = require("config")
 
 ItemFinder = {}
 
@@ -93,12 +94,27 @@ function ItemFinder.compareSlotWithBlock (block_info, slot_info, strict)
     return false
 end
 
-function ItemFinder.findMinimumToolForBlock(block_info)
+function ItemFinder.findMinimumToolForBlock(block_info, equipt_tool)
 
     local minimum_level = nil
     local minimum_slot_index = nil
 
-    for i=1, robot.inventorySize() do
+    -- first check with the already equipt tool
+    if robot.durability () > 0 and ItemFinder.compareSlotWithBlock(block_info, equipt_tool, false) then
+        local tool_analysis = ItemFinder.analyzeTool(equipt_tool)
+
+        if tool_analysis.info.harvestLevel >= block_info.harvestLevel then
+            minimum_slot_index = 0
+            minimul_level = tool_analysis.info.harvestLevel - block_info.harvestLevel
+
+            -- if the difference is 0, then this tool is alredy at the minimum level to mine the block, so return it
+            if minimum_level == 0 then
+                return 0
+            end
+        end
+    end
+
+    for i=config.TOOL_SLOTS.START, config.TOOL_SLOTS.END do
 
         local slot_info = component.inventory_controller.getStackInInternalSlot(i)
 
@@ -108,9 +124,14 @@ function ItemFinder.findMinimumToolForBlock(block_info)
             local slot_analysis = ItemFinder.analyzeTool(slot_info)
 
             if slot_analysis.info.harvestLevel >= block_info.harvestLevel 
-            and (minimum_level == nil or slot_analysis.info.harvestLevel < minimum_level) then
+            and (minimum_level == nil or slot_analysis.info.harvestLevel - block_info.harvestLevel < minimum_level) then
                 minimum_slot_index = i
-                minimum_level = slot_analysis.info.harvestLevel
+                minimum_level = slot_analysis.info.harvestLevel - block_info.harvestLevel
+
+                -- if the difference is 0, then this tool is alredy at the minimum level to mine the block, so return it
+                if minimum_level == 0 then
+                    return minimum_slot_index
+                end
             end
 
         end
@@ -118,6 +139,7 @@ function ItemFinder.findMinimumToolForBlock(block_info)
 
     -- return the index of the the least qualifiable tool
     return minimum_slot_index
+    -- minimum_slot_index == 0 means qualified tool is already equip
 
 end
 
