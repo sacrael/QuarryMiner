@@ -1,3 +1,4 @@
+robot = require("robot")
 
 ItemFinder = {}
 
@@ -104,10 +105,12 @@ function ItemFinder.findMinimumToolForBlock(block_info)
 
         if ItemFinder.compareSlotWithBlock(block_info, slot_info, false) then
 
-            if slot_info.info.harvestLevel >= block_info.harvestLevel 
-            and (minimum_level == nil or slot_info.info.harvestLevel < minimum_level) then
+            local slot_analysis = ItemFinder.analyzeTool(slot_info)
+
+            if slot_analysis.info.harvestLevel >= block_info.harvestLevel 
+            and (minimum_level == nil or slot_analysis.info.harvestLevel < minimum_level) then
                 minimum_slot_index = i
-                minimum_level = slot_info.info.harvestLevel
+                minimum_level = slot_analysis.info.harvestLevel
             end
 
         end
