@@ -1,5 +1,5 @@
 
-ItemFilter = {}
+ItemFinder = {}
 
 ItemFinder.tool_requirements = {
     {id = 1, name="minecraft:stone_pickaxe", required=true, info={harvestTool="pickaxe", harvestLevel=1}},
@@ -85,4 +85,4 @@ function ItemFinder.compareSlotWithBlock (block_info, slot_info)
     return false
 end
 
-return ItemFilter
+return ItemFinder

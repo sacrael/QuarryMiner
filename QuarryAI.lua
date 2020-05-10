@@ -2,7 +2,7 @@ local robot = require("robot")
 local component = require("component")
 local config = require("config")
 local computer = require("computer")
-local ItemFilter = require("ItemFilter")
+local ItemFinder = require("ItemFinder")
 
 QuarryAI = {}
 
@@ -156,8 +156,8 @@ local function shouldReplenishTools ()
 
     -- analyze tools_ with tool_requirements. If any required tools are not present,
     -- we have to return to base to replenish tools
-    for i = 1, #ItemFilter.tool_requirements do
-        if ItemFInder.tool_requirements[i].required then
+    for i = 1, #ItemFinder.tool_requirements do
+        if ItemFinder.tool_requirements[i].required then
 
             -- check through all the tools in my inventory
             local tool_found = false
