@@ -43,7 +43,7 @@ local function equiptTool (slot_index)
     end
 end
 
-local function harvestableBlock(block_info)
+function QuarryAI.harvestableBlock(block_info)
 
     for i = config.DB.AVOID_SLOTS.START, config.DB.AVOID_SLOTS.END do
         -- if any of the blocks in the avoid slot is equal to block_info, then return false
@@ -58,7 +58,7 @@ local function harvestableBlock(block_info)
 
 end
 
-local function fortunateBlock(block_info)
+function QuarryAI.fortunateBlock(block_info)
     -- return true if this block is a block that should be harvested with
     -- a fortune pick
     for i = config.DB.FORTUNE_SLOTS.START, config.DB.FORTUNE_SLOTS.END do
@@ -90,7 +90,7 @@ local function shouldHarvest (direction_index)
         return false
     end
 
-    return harvestableBlock ( component.geolyzer.analyze(direction_index) )
+    return QuarryAI.harvestableBlock ( component.geolyzer.analyze(direction_index) )
 end
 
 local function sortByPriority (a, b)
