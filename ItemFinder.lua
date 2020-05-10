@@ -79,8 +79,8 @@ function ItemFinder.compareSlotWithBlock (block_info, slot_info)
     if slot_tool == nil then return false end
     print("This is one of the core tools")
 
-    print("slot_tool.info.harvestTool == block_info.harvestTool ? " .. (slot_tool.info.harvestTool == block_info.harvestTool))
-    print("slot_tool.info.harvestTool >= block_info.harbestLevel ? " .. (slot_tool.info.harbestLevel >= block_info.harbestLevel))
+    print("slot_tool.info.harvestTool == block_info.harvestTool ? " .. tostring(slot_tool.info.harvestTool == block_info.harvestTool))
+    print("slot_tool.info.harvestTool >= block_info.harbestLevel ? " .. tostring(slot_tool.info.harvestLevel >= block_info.harvestLevel))
 
     -- check if the tool has the required harvestLevel and harvestTool values
     if slot_tool.info.harvestTool == block_info.harvestTool and slot_tool.info.harvestLevel >= block_info.harvestLevel then
