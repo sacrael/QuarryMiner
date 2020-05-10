@@ -111,12 +111,9 @@ local function equiptOptimal (block_info)
 
 end
 
-local function shouldHarvest (direction_index)
-    if direction_index < 0 or direction_index > 5 then
-        return false
-    end
+local function shouldHarvest (block_info)
 
-    return QuarryAI.harvestableBlock ( component.geolyzer.analyze(direction_index) )
+    return QuarryAI.harvestableBlock ( block_info )
 end
 
 local function sortByPriority (a, b)
@@ -144,9 +141,10 @@ function QuarryAI.analyzeNextDepth ()
     end
 
     -- then, move forward and analyze up, down, left and right
+    local block_info
     robot.forward ()
 
-        block_info = component.geolyzer.analyze(ANALYZE_DIRECTION.DOWN)
+    block_info = component.geolyzer.analyze(ANALYZE_DIRECTION.DOWN)
     if shouldHarvest(block_info) then
         equiptOptimal ( block_info )
         print ("Optimal weapon equipt for down block")
