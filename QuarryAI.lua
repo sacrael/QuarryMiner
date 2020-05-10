@@ -33,9 +33,14 @@ local function equiptTool (slot_index)
         print ("Cannot equip...")
     end
 
-    active_tool = component.inventory_controller.getStackInInternalSlot(slot_index)
-    robot.select(slot_index)
-    component.inventory_controller.equip()
+    local stack_info = component.inventory_controller.getStackInInternalSlot(slot_index)
+    if stack_info ~= nil then
+        -- only equip if there is actually something in the slot we are trying to 
+        -- equipt from.
+        active_tool = stack_info
+        robot.select(slot_index)
+        component.inventory_controller.equip()
+    end
 end
 
 local function harvestableBlock(block_info)
