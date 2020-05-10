@@ -43,6 +43,29 @@ local function equiptTool (slot_index)
     end
 end
 
+local function equiptFortune ()
+
+    if ItemFinder.analyzeTool(active_tool).id == 8 then
+        return true
+    end
+
+    -- find the fortune pick and equip it
+    for i = config.TOOL_SLOTS.START, config.TOOL_SLOTS.END do
+        local stack_info = component.inventory_controller.getStackInInternalSlot(i)
+        local tool_info = ItemFinder.analyzeTool( stack_info )
+        if tool_info ~= nil and tool_info.id == 8 then
+            -- equip it
+            active_tool = stack_info
+            robot.select(i)
+            component.inventory_controller.equip ()
+            return true
+        end
+    end
+
+    return false
+
+end
+
 function QuarryAI.harvestableBlock(block_info)
 
     for i = config.DB.AVOID_SLOTS.START, config.DB.AVOID_SLOTS.END do
@@ -76,12 +99,15 @@ local function equiptOptimal (block_info)
     -- Given information about the block we want to break, equipt the
     --  tool that will best break that block.
 
-    local harvest_tool = block_info.harvestTool
-    -- if there is no specified harvest tool, then any tool will do
-    -- (this will rearly happen as most blocks have an optimal harvest tool)
-    if harvest_tool ~= nil then
-
+    if QuarryAI.fortunateBlock(block_info) and equiptFortune() then
+        print("fortune pick equipt")
+    else
+        local minimum_tool = ItemFinder.findMinimumToolForBlock(block_info, active_tool)
+        if minimum_tool > 0 then
+            equiptFortune(minimum_tool)
+        end
     end
+
 
 end
 
