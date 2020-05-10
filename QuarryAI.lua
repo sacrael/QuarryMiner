@@ -50,10 +50,12 @@ local function harvestableBlock(block_info)
     for i = config.DB.AVOID_SLOTS.START, config.DB.AVOID_SLOTS.END do
         -- if any of the blocks in the avoid slot is equal to block_info, then return false
         if component.database.get(i) ~= nil and component.database.get(i).name == block_info.name then
+            print("Block of name " .. block_info.name .. " CANNOT be harvested.")
             return false
         end
     end
 
+    print("Block of name " .. block_info.name .. " can be harvested.")
     return true
 
 end
