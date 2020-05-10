@@ -103,6 +103,7 @@ function QuarryAI.analyzeNextDepth ()
         -- check if the block detected is what we want
         if shouldHarvest (ANALYZE_DIRECTION.FRONT) then
             equiptOptimal ( component.geolyzer.analyze(ANALYZE_DIRECTION.FRONT) )
+            print ("Optimal weapon equipt for front block")
             robot.swing ()
             robot.suck ()
         else
@@ -115,12 +116,14 @@ function QuarryAI.analyzeNextDepth ()
 
     if shouldHarvest(ANALYZE_DIRECTION.DOWN) then
         equiptOptimal ( component.geolyzer.analyze(ANALYZE_DIRECTION.DOWN) )
+        print ("Optimal weapon equipt for down block")
         robot.swingDown()
         robot.suckDown()
     end
 
     if shouldHarvest(ANALYZE_DIRECTION.UP) then
         equiptOptimal ( component.geolyzer.analyze(ANALYZE_DIRECTION.UP) )
+        print ("Optimal weapon equipt for up block")
         robot.swingUp()
         robot.suckUp()
     end
@@ -128,6 +131,7 @@ function QuarryAI.analyzeNextDepth ()
     -- check right
     if shouldHarvest(ANALYZE_DIRECTION.RIGHT) then
         equiptOptimal ( component.geolyzer.analyze(ANALYZE_DIRECTION.RIGHT) )
+        print ("Optimal weapon equipt for right block")
         robot.turnRight ()
         robot.swing ()
         robot.suck()
@@ -137,6 +141,7 @@ function QuarryAI.analyzeNextDepth ()
     -- check left
     if shouldHarvest(ANALYZE_DIRECTION.LEFT) then
         equiptOptimal ( component.geolyzer.analyze(ANALYZE_DIRECTION.LEFT) )
+        print ("Optimal weapon equipt for left block")
         robot.turnLeft ()
         robot.swing()
         robot.suck()
