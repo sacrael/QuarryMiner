@@ -16,27 +16,6 @@ local ANALYZE_DIRECTION = {
     LEFT = 5,
 }
 
-local tool_requirements = {
-    -- omit slots, so we can have 1 free space that is not left empty due to
-    -- the item in the slot being equipt. Instead, search the 1st 4 slots and the
-    -- equipt slot
-
-    {label = "pickaxe",         required=true,      type={ {name="minecraft:stone_pickaxe", priority=1} }}, -- stone pickaxe
-    {label= "iron pickaxe",     required=true,      type={ {name="minecraft:iron_pickaxe", priority=1} }}, -- iron pickaxe
-    {label = "shovel",          required=true,      type={
-                                                            {name="minecraft:stone_shovel", priority=1},
-                                                            {name="monecraft:iron_shovel", priority=2}
-                                                        }},
-    {label = "axe",             required=true,      type={
-                                                            {name="minecraft:stone_axe", priority=1},
-                                                            {name="minecraft:iron_axe", priority=2}
-                                                        }},
-    {label = "silk pickaxe",    required=false,     type={ {
-                                                             name="tconstruct:pickaxe",
-                                                            filter= function(item) ItemFilter.Tinker(item, {"Silk Touch"}) end,
-                                                            priority=1} }} -- silk touch pixkaxe
-}
-
 -- Geolyzer.analyze
 --  0 == down
 --  1 == up
@@ -86,12 +65,6 @@ local function sortByPriority (a, b)
     return a.priority < b.priority
 end
 
-function QuarryAI.prepare ()
-    for i=1, #tool_requirements do
-        table.sort (tool_requirements[i].type, sortByPriority)
-    end
-end
-
 function QuarryAI.analyzeNextDepth ()
     -- assumption: robot is already positioned in the line it needs to mine in
     --  and is facing the direction parallel to the line
@@ -101,8 +74,9 @@ function QuarryAI.analyzeNextDepth ()
     -- first, clear anything in front of it, pick it up if it is good material
     if robot.detect () then
         -- check if the block detected is what we want
-        if shouldHarvest (ANALYZE_DIRECTION.FRONT) then
-            equiptOptimal ( component.geolyzer.analyze(ANALYZE_DIRECTION.FRONT) )
+        local block_info = component.geolyzer.analyze(ANALYZE_DIRECTION.FRONT)
+        if shouldHarvest (block_info) then
+            equiptOptimal ( block_info )
             print ("Optimal weapon equipt for front block")
             robot.swing ()
             robot.suck ()
@@ -114,33 +88,37 @@ function QuarryAI.analyzeNextDepth ()
     -- then, move forward and analyze up, down, left and right
     robot.forward ()
 
-    if shouldHarvest(ANALYZE_DIRECTION.DOWN) then
-        equiptOptimal ( component.geolyzer.analyze(ANALYZE_DIRECTION.DOWN) )
+        block_info = component.geolyzer.analyze(ANALYZE_DIRECTION.DOWN)
+    if shouldHarvest(block_info) then
+        equiptOptimal ( block_info )
         print ("Optimal weapon equipt for down block")
         robot.swingDown()
         robot.suckDown()
     end
 
-    if shouldHarvest(ANALYZE_DIRECTION.UP) then
-        equiptOptimal ( component.geolyzer.analyze(ANALYZE_DIRECTION.UP) )
+    block_info = component.geolyzer.analyze(ANALYZE_DIRECTION.UP)
+    if shouldHarvest(block_info) then
+        equiptOptimal ( block_info )
         print ("Optimal weapon equipt for up block")
         robot.swingUp()
         robot.suckUp()
     end
 
     -- check right
-    if shouldHarvest(ANALYZE_DIRECTION.RIGHT) then
-        equiptOptimal ( component.geolyzer.analyze(ANALYZE_DIRECTION.RIGHT) )
+    block_info = component.geolyzer.analyze(ANALYZE_DIRECTION.RIGHT)
+    if shouldHarvest(block_info) then
+        equiptOptimal ( block_info )
         print ("Optimal weapon equipt for right block")
         robot.turnRight ()
-        robot.swing ()
+        robot.swing()
         robot.suck()
         robot.turnLeft ()
     end
 
     -- check left
-    if shouldHarvest(ANALYZE_DIRECTION.LEFT) then
-        equiptOptimal ( component.geolyzer.analyze(ANALYZE_DIRECTION.LEFT) )
+    block_info = component.geolyzer.analyze(ANALYZE_DIRECTION.LEFT)
+    if shouldHarvest(block_info) then
+        equiptOptimal ( block_info )
         print ("Optimal weapon equipt for left block")
         robot.turnLeft ()
         robot.swing()
@@ -153,17 +131,6 @@ end
 local function shouldCharge ()
     -- default
     return (computer.energy() / computer.maxEnergy()) < 0.4
-end
-
-local function hasTool (toolset, tool_name)
-
-    for i = 1, #toolset do
-        if toolset[i].name == tool_name then
-            return true
-        end
-    end
-    return false
-
 end
 
 local function shouldReplenishTools ()
@@ -189,28 +156,28 @@ local function shouldReplenishTools ()
 
     -- analyze tools_ with tool_requirements. If any required tools are not present,
     -- we have to return to base to replenish tools
-    for i=1, #tool_requirements do
-        if tool_requirements[i].required then
+    for i = 1, #ItemFilter.tool_requirements do
+        if ItemFInder.tool_requirements[i].required then
 
-            -- check if any variation of this required too exists in out toolset
+            -- check through all the tools in my inventory
             local tool_found = false
-            for j = 1, #tool_requirements[i].type do
+            for j = 0, #tools_ do
 
-                if hasTool(tools_, tool_requirements[i].type[j].name) then
+                -- if the tool has been found and it has the same tool
+                -- id, then we set tool_found to true and break
+                local tool_info = ItemFinder.analyzeTool(tools_[j])
+                if tool_info.id == ItemFinder.tool_requirements[i].id then
                     tool_found = true
+                    break
                 end
-
             end
 
-            -- if we didnt find one of the required tools, then we should replenish tools
-            if not tool_found then
-                return true
-            end
+            -- if the tool has not been found, then we need to return
+            -- to base to replenish the tools
+            if not tool_found then return true end
 
         end
     end
-
-    -- we have all required tools. Do not need to replenish
     return false
 
 end

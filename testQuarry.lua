@@ -1,6 +1,6 @@
 local QuarryAI = require("QuarryAI")
 
-local TEST_ID = 0
+local TEST_ID = 2
 
 -- First Test: analyzeNextDepth
 if TEST_ID == 0 then
