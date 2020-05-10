@@ -48,7 +48,7 @@ function ItemFinder.analyzeTool (slot_info)
             if ItemFinder.tool_requirements[i].enchantments ~= nil then
 
                 for j=1, #ItemFinder.tool_requirements[i].enchantments do
-                    if ~ItemFinder.containsEnchantment(slot_info, ItemFinder.tool_requirements[i].enchantments[j]) then
+                    if not ItemFinder.containsEnchantment(slot_info, ItemFinder.tool_requirements[i].enchantments[j]) then
                     -- if SLOT_INFO ENCHANTMENTS DOESNT HAVE TOOL_REQUIREMENT ENCHANTMENTS then
                         goto continue
                     end
@@ -73,11 +73,16 @@ function ItemFinder.compareSlotWithBlock (block_info, slot_info)
 
     if slot_info == nil then return false end
 
+    print("Analyzing tool")
     local slot_tool = ItemFinder.analyzeTool(slot_info)
     if slot_tool == nil then return false end
+    print("This is one of the core tools")
+
+    print("slot_tool.info.harvestTool == block_info.harvestTool ? " .. (slot_tool.info.harvestTool == block_info.harvestTool))
+    print("slot_tool.info.harvestTool >= block_info.harbestLevel ? " .. (slot_tool.info.harvestTool >= block_info.harbestLevel))
 
     -- check if the tool has the required harvestLevel and harvestTool values
-    if slot_tool.info.harvestTool == block_info.harvestTool and slot_tool.info.harvestTool >= block_info.harbestLevel then
+    if slot_tool.info.harvestTool == block_info.harvestTool and slot_tool.info.harvestLevel >= block_info.harvestLevel then
         return true
     end
 
