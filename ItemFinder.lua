@@ -100,12 +100,12 @@ function ItemFinder.findMinimumToolForBlock(block_info, equipt_tool)
     local minimum_slot_index = nil
 
     -- first check with the already equipt tool
-    if robot.durability () > 0 and ItemFinder.compareSlotWithBlock(block_info, equipt_tool, false) then
+    if robot.durability() ~= nil and ItemFinder.compareSlotWithBlock(block_info, equipt_tool, false) then
         local tool_analysis = ItemFinder.analyzeTool(equipt_tool)
 
         if tool_analysis.info.harvestLevel >= block_info.harvestLevel then
             minimum_slot_index = 0
-            minimul_level = tool_analysis.info.harvestLevel - block_info.harvestLevel
+            minimum_level = tool_analysis.info.harvestLevel - block_info.harvestLevel
 
             -- if the difference is 0, then this tool is alredy at the minimum level to mine the block, so return it
             if minimum_level == 0 then
