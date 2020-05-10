@@ -21,7 +21,7 @@ local function tableContains (table_, value)
     return false
 end
 
-local function containsEnchantment (item_info, value)
+function ItemFinder.containsEnchantment (item_info, value)
 
     if item_info.enchantments == nil then return false end
 
@@ -48,7 +48,7 @@ function ItemFinder.analyzeTool (slot_info)
             if ItemFinder.tool_requirements[i].enchantments ~= nil then
 
                 for j=1, #ItemFinder.tool_requirements[i].enchantments do
-                    if ~containsEnchantment(slot_info, ItemFinder.tool_requirements[i].enchantments[j]) then
+                    if ~ItemFinder.containsEnchantment(slot_info, ItemFinder.tool_requirements[i].enchantments[j]) then
                     -- if SLOT_INFO ENCHANTMENTS DOESNT HAVE TOOL_REQUIREMENT ENCHANTMENTS then
                         goto continue
                     end
